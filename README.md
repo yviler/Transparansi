@@ -9,6 +9,7 @@ Anyone can observe. Only authorized people can touch the money.
 ---
 
 ## The Problem
+
 In large organizations — governments, institutions, even businesses — money disappears
 not because systems are complex, but because they're opaque. No one can see where it
 went, who approved it, or whether it was legitimate. Transparansi is a simple answer
@@ -18,6 +19,7 @@ accountable.
 ---
 
 ## Features
+
 - **Role-based access** — Admin, Supervisor, Staff, and public Observers
 - **Project budgeting** — Allocate funds from a central wallet to individual projects
 - **Task management** — Break projects into tasks and subtasks, assign staff
@@ -29,6 +31,7 @@ accountable.
 ---
 
 ## Tech Stack
+
 - **FastAPI** — Web framework
 - **SQLAlchemy** — ORM
 - **Alembic** — Database migrations
@@ -39,14 +42,17 @@ accountable.
 ---
 
 ## Project Status
-🚧 In active development — MVP in progress
+
+In active development — MVP in progress
 
 ---
 
 ## Setup
+
 _Coming soon_
 
 ---
 
 ## Design
+
 See [DESIGN.md](./DESIGN.md) for full system design, data models, and flows.
