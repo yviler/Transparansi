@@ -13,4 +13,4 @@ def loginPage(request: Request):
     
 @router.post("/login")
 async def login(request: Request, username:str= Form(...), password:str= Form(...)):
-    return {username, password}
+    return {username, password, config.DATABASE_URL}
