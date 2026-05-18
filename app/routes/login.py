@@ -12,5 +12,5 @@ def loginPage(request: Request):
             )
     
 @router.post("/login")
-def login(request: Request, username:str= Form(...), password:str= Form(...)):
+async def login(request: Request, username:str= Form(...), password:str= Form(...)):
     return {username, password}
