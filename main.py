@@ -1,15 +1,13 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating  import Jinja2Templates
-from app.routes import dashboard
+from app.routes import login
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"))
-templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-app.include_router(dashboard.router)
+app.include_router(login.router)
 
 @app.get("/")
 def index():
-    return RedirectResponse(url="/dashboardPage")
+    return RedirectResponse(url="/login")
