@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
 import config
-from app.database import get_db
+from app.database import get_db, AsyncSession
 import app.utils.users as users
 from datetime import date
+from app.models.users import Users
+import secrets
 
 router = APIRouter()
 
@@ -31,10 +33,22 @@ async def createUser(request:Request,
                full_name:str= Form(...), 
                password:str= Form(...), 
                password_confirm:str= Form(...), 
-               date_of_birth:date= Form(...)
+               date_of_birth:date= Form(...),
+               db: AsyncSession = Depends(get_db),
                ):
     
     if password != password_confirm:
         return {"error": "passwords do not match"}
     
     hashedPassword = users.getPasswordHash(password)
+
+    new_user = Users(
+        username = username,
+        password_hash=hashedPassword,
+        full_name=full_name,
+        date_of_birth=date_of_birth,
+        employee_id=secrets.token_hex(4).upper()
+    )
+
+    db.add(new_user)
+    await db.commit()
