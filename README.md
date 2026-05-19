@@ -43,13 +43,12 @@ accountable.
 
 ## Project Status
 
-In active development — MVP in progress
+In active development
 
 ---
 
 ## Setup
 
-_Coming soon_
 
 ---
 
