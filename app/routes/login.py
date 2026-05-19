@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
 import config
+import app.utils.sys as sys
 from app.database import get_db, AsyncSession
 import app.utils.users as users
 from datetime import date
@@ -24,19 +25,22 @@ async def login(request: Request, username:str= Form(...), password:str= Form(..
 def createUserPage(request:Request):
     return config.templates.TemplateResponse(
                 request=request,
-                name="create_account.html"
+                name="create_account.html",
+                context={
+                    "data": None,
+                },
             )
 
 @router.post("/create_user")
 async def createUser(request:Request, 
-               username:str= Form(...), 
-               full_name:str= Form(...), 
-               password:str= Form(...), 
-               password_confirm:str= Form(...), 
-               date_of_birth:date= Form(...),
-               db: AsyncSession = Depends(get_db),
-               ):
-    
+                    username:str= Form(...), 
+                    full_name:str= Form(...), 
+                    password:str= Form(...), 
+                    password_confirm:str= Form(...), 
+                    date_of_birth:date= Form(...),
+                    db: AsyncSession = Depends(get_db),
+                    ):
+            
     if password != password_confirm:
         return {"error": "passwords do not match"}
     
@@ -50,5 +54,22 @@ async def createUser(request:Request,
         employee_id=secrets.token_hex(4).upper()
     )
 
-    db.add(new_user)
-    await db.commit()
+    if users.duplicateUsernames(username):
+        sys.flash(request, "username already exists", "error")
+        return config.templates.TemplateResponse(
+            request=request,
+            name="create_account.html",
+            context={
+                "data": new_user
+            },
+        )
+    try:
+        db.add(new_user)
+        await db.commit()
+    except Exception:
+        return config.templates.TemplateResponse(
+                    request=request,
+                    name="error.html",
+                    )
+        
+    return {"success": f"user {username} successfully created"}
