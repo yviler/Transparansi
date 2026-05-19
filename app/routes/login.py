@@ -19,8 +19,10 @@ def loginPage(request: Request):
     
 @router.post("/login")
 async def login(request: Request, username:str= Form(...), password:str= Form(...)):
-    return {username, password}
 
+    await users.verifyPasswordWithHash()
+
+    
 @router.get("/create_user")
 def createUserPage(request:Request):
     return config.templates.TemplateResponse(
@@ -44,7 +46,7 @@ async def createUser(request:Request,
     if password != password_confirm:
         return {"error": "passwords do not match"}
     
-    hashedPassword = users.getPasswordHash(password)
+    hashedPassword = await users.getPasswordHash(password)
 
     new_user = Users(
         username = username,
@@ -54,7 +56,7 @@ async def createUser(request:Request,
         employee_id=secrets.token_hex(4).upper()
     )
 
-    if users.duplicateUsernames(username):
+    if await users.duplicateUsernames(username, db):
         sys.flash(request, "username already exists", "error")
         return config.templates.TemplateResponse(
             request=request,
