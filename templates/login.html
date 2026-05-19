@@ -6,11 +6,19 @@
     <title>login</title>
   </head>
   <body>
+    {# Flash Message #} {% for message in get_flashed_messages(request) %}
+    <div class="{{ message.category }}">{{ message.message}}</div>
+    {% endfor %} {# Flash Ends #}
     <div>
       <form action="/login" method="post">
         <label for="username">Username</label>
         <br />
-        <input type="text" name="username" required />
+        <input
+          type="text"
+          name="username"
+          required
+          value="{{ username if username else ''}}"
+        />
         <br />
         <label for="password">Password</label>
         <br />

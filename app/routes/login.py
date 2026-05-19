@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form, Depends
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 import config
-import app.utils.sys as sys
+import app.utils.system as system
 from app.database import get_db, AsyncSession
 import app.utils.users as users
 from datetime import date
@@ -13,15 +13,40 @@ router = APIRouter()
 @router.get("/login")
 def loginPage(request: Request):
     return config.templates.TemplateResponse(
+                context={
+                    "username": None
+                },
                 request=request,
                 name="login.html",
             )
     
 @router.post("/login")
-async def login(request: Request, username:str= Form(...), password:str= Form(...)):
-
-    await users.verifyPasswordWithHash()
-
+async def login(request: Request, 
+                username:str= Form(...), 
+                password:str= Form(...), 
+                db:AsyncSession = Depends(get_db)):
+    user = await users.doesUserExist(username, db)
+    if not user:
+        system.flash(request, "username does not exist", "error")
+        return config.templates.TemplateResponse(
+            context={
+                "username": username
+            },
+            request=request,
+            name="login.html",
+        )
+    userPassHash = user.password_hash
+    if users.verifyPasswordWithHash(password, userPassHash):
+        return RedirectResponse(url="/dashboard", status_code=303)
+    else:
+        system.flash(request, "incorrect password", "error")
+        return config.templates.TemplateResponse(
+            context={
+                "username": username
+            },
+            request=request,
+            name="login.html",
+        )
     
 @router.get("/create_user")
 def createUserPage(request:Request):
@@ -46,7 +71,7 @@ async def createUser(request:Request,
     if password != password_confirm:
         return {"error": "passwords do not match"}
     
-    hashedPassword = await users.getPasswordHash(password)
+    hashedPassword = users.getPasswordHash(password)
 
     new_user = Users(
         username = username,
@@ -56,8 +81,8 @@ async def createUser(request:Request,
         employee_id=secrets.token_hex(4).upper()
     )
 
-    if await users.duplicateUsernames(username, db):
-        sys.flash(request, "username already exists", "error")
+    if await users.doesUsernameExist(username, db):
+        system.flash(request, "username already exists", "error")
         return config.templates.TemplateResponse(
             request=request,
             name="create_account.html",
@@ -73,5 +98,11 @@ async def createUser(request:Request,
                     request=request,
                     name="error.html",
                     )
-        
-    return {"success": f"user {username} successfully created"}
+    system.flash(request, f"user {username} successfully created", "success")
+    return config.templates.TemplateResponse(
+        context={
+            "username": None,
+        },
+        request=request,
+        name="login.html",
+    )

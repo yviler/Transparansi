@@ -15,7 +15,7 @@ touch it. Built around the idea that visibility alone is a form of accountabilit
 | Migrations | Alembic |
 | Database | PostgreSQL |
 | Validation | Pydantic (built into FastAPI) |
-| Auth | JWT (built manually) |
+| Auth | Session-based (Starlette SessionMiddleware) |
 
 ---
 
@@ -181,7 +181,7 @@ Tracks modifications on any record. Linked records store a list of change IDs.
 
 ## MVP Scope
 Get this full flow working end to end before adding anything else:
-- [ ] Auth (JWT, role-based)
+- [ ] Auth (session-based, role-based)
 - [ ] System wallet + deposit
 - [ ] Create project + allocate budget
 - [ ] Create tasks + subtasks

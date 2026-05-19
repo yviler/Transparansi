@@ -6,14 +6,17 @@ from sqlalchemy import select
 
 password_hash = PasswordHash.recommended()
 
-async def getPasswordHash(password:str) -> str:
+def getPasswordHash(password:str) -> str:
     return password_hash.hash(password)
 
 async def findUserHash(username:str, db: AsyncSession) -> str:
-    return 
+    return (await db.execute(select(Users.password_hash).where(Users.username == username))).scalars().first()
 
-async def verifyPasswordWithHash(password:str, hashed:str) -> bool:
+def verifyPasswordWithHash(password:str, hashed:str) -> bool:
     return password_hash.verify(password, hashed)
 
-async def duplicateUsernames(username: str, db: AsyncSession) -> bool:
+async def doesUsernameExist(username: str, db: AsyncSession) -> bool:
+    return (await db.execute(select(1).where(Users.username == username))).scalars().first()
+
+async def doesUserExist(username: str, db:AsyncSession) -> Users:
     return (await db.execute(select(Users).where(Users.username == username))).scalars().first()
