@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Request, Form, Depends
+from fastapi import APIRouter, Request, Form, Depends, Response
 from fastapi.responses import RedirectResponse
 import config
-import app.utils.system as system
+import app.utils.flash as flash
 from app.database import get_db, AsyncSession
 import app.utils.users as users
 from datetime import date
@@ -22,12 +22,14 @@ def loginPage(request: Request):
     
 @router.post("/login")
 async def login(request: Request, 
+                response: Response,
                 username:str= Form(...), 
                 password:str= Form(...), 
-                db:AsyncSession = Depends(get_db)):
+                db:AsyncSession = Depends(get_db),
+            ):
     user = await users.doesUserExist(username, db)
     if not user:
-        system.flash(request, "username does not exist", "error")
+        flash.flash(request, "username does not exist", "error")
         return config.templates.TemplateResponse(
             context={
                 "username": username
@@ -37,9 +39,11 @@ async def login(request: Request,
         )
     userPassHash = user.password_hash
     if users.verifyPasswordWithHash(password, userPassHash):
+        #TODO: set value of the token to users: session_token (add later) using alembic
+        response.set_cookie(key="session_id", value=secrets.token_hex(32))
         return RedirectResponse(url="/dashboard", status_code=303)
     else:
-        system.flash(request, "incorrect password", "error")
+        flash.flash(request, "incorrect password", "error")
         return config.templates.TemplateResponse(
             context={
                 "username": username
@@ -82,7 +86,7 @@ async def createUser(request:Request,
     )
 
     if await users.doesUsernameExist(username, db):
-        system.flash(request, "username already exists", "error")
+        flash.flash(request, "username already exists", "error")
         return config.templates.TemplateResponse(
             request=request,
             name="create_account.html",
@@ -98,7 +102,7 @@ async def createUser(request:Request,
                     request=request,
                     name="error.html",
                     )
-    system.flash(request, f"user {username} successfully created", "success")
+    flash.flash(request, f"user {username} successfully created", "success")
     return config.templates.TemplateResponse(
         context={
             "username": None,

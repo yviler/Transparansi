@@ -20,3 +20,4 @@ async def doesUsernameExist(username: str, db: AsyncSession) -> bool:
 
 async def doesUserExist(username: str, db:AsyncSession) -> Users:
     return (await db.execute(select(Users).where(Users.username == username))).scalars().first()
+

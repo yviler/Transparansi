@@ -1,11 +1,11 @@
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import os
-import app.utils.system as system
+import app.utils.flash as flash
 
 load_dotenv()
 templates = Jinja2Templates(directory="templates")
-templates.env.globals['get_flashed_messages'] = system.get_flashed_messages
+templates.env.globals['getFlashedMessages'] = flash.getFlashedMessages
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY")

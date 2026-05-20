@@ -6,7 +6,7 @@
     <title>login</title>
   </head>
   <body>
-    {# Flash Message #} {% for message in get_flashed_messages(request) %}
+    {# Flash Message #} {% for message in getFlashedMessages(request) %}
     <div class="{{ message.category }}">{{ message.message}}</div>
     {% endfor %} {# Flash Ends #}
     <div>
