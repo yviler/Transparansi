@@ -16,3 +16,5 @@ class Users(Base):
     is_active = Column(Boolean, nullable=False, default=True)
     date_joined = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     date_left = Column(TIMESTAMP(timezone=True))
+    session_token = Column(String, nullable=True, unique=True)
+    session_token_expires_at = Column(TIMESTAMP(timezone=True), nullable=True)

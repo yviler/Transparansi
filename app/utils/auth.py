@@ -6,6 +6,7 @@ from sqlalchemy import select
 async def insertSessionToken(request: Request, token: str, db: AsyncSession = Depends(get_db)):
     #TODO: insert to database
     return 1
+
 async def verifySession(request: Request, db: AsyncSession = Depends(get_db)):
     session_id = request.cookies.get("session_id")
 

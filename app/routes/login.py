@@ -95,8 +95,7 @@ async def createUser(request:Request,
             },
         )
     try:
-        db.add(new_user)
-        await db.commit()
+        users.createNewUser(new_user, db)
     except Exception:
         return config.templates.TemplateResponse(
                     request=request,
