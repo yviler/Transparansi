@@ -7,6 +7,8 @@ import app.utils.users as users
 from datetime import date
 from app.models.users import Users
 import secrets
+import app.utils.auth as auth
+
 
 router = APIRouter()
 
@@ -39,8 +41,9 @@ async def login(request: Request,
         )
     userPassHash = user.password_hash
     if users.verifyPasswordWithHash(password, userPassHash):
-        #TODO: set value of the token to users: session_token (add later) using alembic
-        response.set_cookie(key="session_id", value=secrets.token_hex(32))
+        token = secrets.token_hex(32)
+        await auth.insertSessionToken(user, token, db)
+        response.set_cookie(key="session_id", value=token)
         return RedirectResponse(url="/dashboard", status_code=303)
     else:
         flash.flash(request, "incorrect password", "error")
@@ -95,7 +98,7 @@ async def createUser(request:Request,
             },
         )
     try:
-        users.createNewUser(new_user, db)
+        await users.createNewUser(new_user, db)
     except Exception:
         return config.templates.TemplateResponse(
                     request=request,
