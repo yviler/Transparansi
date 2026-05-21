@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Boolean, TIMESTAMP, Enum, func
+from sqlalchemy import Column, String, Date, Boolean, TIMESTAMP, Enum, func
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 import uuid
