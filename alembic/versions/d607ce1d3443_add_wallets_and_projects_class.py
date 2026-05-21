@@ -1,8 +1,8 @@
 """add wallets and projects class
 
-Revision ID: 36176f6b6393
+Revision ID: d607ce1d3443
 Revises: 8200c1238885
-Create Date: 2026-05-21 20:25:46.220565
+Create Date: 2026-05-21 20:34:53.129432
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '36176f6b6393'
+revision: str = 'd607ce1d3443'
 down_revision: Union[str, Sequence[str], None] = '8200c1238885'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,11 +28,9 @@ def upgrade() -> None:
     sa.Column('expected_budget', sa.Numeric(), nullable=False),
     sa.Column('status', sa.Enum('pending', 'ongoing', 'delayed', 'finished', 'cancelled', name='project_status'), nullable=False),
     sa.Column('supervisor_id', sa.UUID(), nullable=False),
-    sa.Column('wallet_id', sa.UUID(), nullable=False),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('finished_at', sa.TIMESTAMP(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['supervisor_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['wallet_id'], ['wallets.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_projects_name'), 'projects', ['name'], unique=True)
