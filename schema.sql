@@ -16,5 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     employee_id     VARCHAR(100) NOT NULL UNIQUE,
     is_active       BOOLEAN     NOT NULL DEFAULT TRUE,
     date_joined     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    date_left       TIMESTAMPTZ
+    date_left       TIMESTAMPTZ,
+    session_token   VARCHAR(255) UNIQUE,
+    session_token_expires_at TIMESTAMPTZ,
 );
