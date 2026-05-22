@@ -14,3 +14,5 @@ class Projects(Base):
     supervisor_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     finished_at = Column(TIMESTAMP(timezone=True), nullable=True)
+    
+        

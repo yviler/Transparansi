@@ -18,3 +18,4 @@ class Users(Base):
     date_left = Column(TIMESTAMP(timezone=True))
     session_token = Column(String, nullable=True, unique=True)
     session_token_expires_at = Column(TIMESTAMP(timezone=True), nullable=True)
+                    

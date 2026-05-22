@@ -18,11 +18,12 @@ async def verifySession(user: Users, request: Request, db: AsyncSession = Depend
     
     #check if session is expired, and later, check if correct user is using this session
     
+    #NoneType crash if token not found
     if not session_id or session_id != user.session_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired session. Please login"
         )
         
-    return Users
+    return user
 

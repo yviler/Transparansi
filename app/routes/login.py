@@ -43,7 +43,7 @@ async def login(request: Request,
     if users.verifyPasswordWithHash(password, userPassHash):
         token = secrets.token_hex(32)
         await auth.insertSessionToken(user, token, db)
-        response.set_cookie(key="session_id", value=token)
+        response.set_cookie(key="session_id", value=token, httponly=True)
         return RedirectResponse(url="/dashboard", status_code=303)
     else:
         flash.flash(request, "incorrect password", "error")
@@ -74,19 +74,30 @@ async def createUser(request:Request,
                     date_of_birth:date= Form(...),
                     db: AsyncSession = Depends(get_db),
                     ):
-            
+        
     if password != password_confirm:
-        return {"error": "passwords do not match"}
-    
+        flash.flash(request, "passwords do not match", "error")
+        return config.templates.TemplateResponse(
+            request=request,
+            name="create_account.html",
+            context={
+                "data": {"username": username,
+                         "full_name": full_name,
+                         "date_of_birth":date_of_birth
+                         }
+            },
+        )
+            
     hashedPassword = users.getPasswordHash(password)
 
     new_user = Users(
-        username = username,
-        password_hash=hashedPassword,
-        full_name=full_name,
-        date_of_birth=date_of_birth,
-        employee_id=secrets.token_hex(4).upper()
-    )
+            username = username,
+            password_hash=hashedPassword,
+            full_name=full_name,
+            date_of_birth=date_of_birth,
+            employee_id=secrets.token_hex(4).upper()
+        )
+    
 
     if await users.doesUsernameExist(username, db):
         flash.flash(request, "username already exists", "error")
