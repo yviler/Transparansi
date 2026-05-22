@@ -23,5 +23,6 @@ async def verifySession(user: Users, request: Request, db: AsyncSession = Depend
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired session. Please login"
         )
+        
     return Users
 

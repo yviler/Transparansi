@@ -7,8 +7,8 @@ from app.database import get_db, AsyncSession
 router = APIRouter()
 
 @router.get("/dashboard")
-def dashboardPage(request: Request, db:AsyncSession = Depends(get_db)):
-    projectList = createProjectList(db)
+async def dashboardPage(request: Request, db:AsyncSession = Depends(get_db)):
+    projectList = await createProjectList(db)
     return config.templates.TemplateResponse(
         context={
             "projects": projectList,
