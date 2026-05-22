@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, Depends
 import config
-from app.models.users import Users
 from app.utils.projects import createProjectList
 from app.database import get_db, AsyncSession
 
