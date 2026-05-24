@@ -3,5 +3,5 @@ content %} {% if projects%} {% for project in projects %} {{ project }} {%
 endfor %} {% else %}
 <p>no projects yet</p>
 {% endif %} {# make check for if user role is Admin #}
-<a href="{{request.url_for('createProjectPage')}}">open a project</a> {%
-endblock %}
+<a href="{{request.url_for('createProjectPage')}}">open a project</a>
+{% endblock %}

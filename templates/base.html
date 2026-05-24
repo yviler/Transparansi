@@ -1,16 +1,21 @@
 <!doctype html>
 <html lang="en">
+  {% block head %}
   <head>
     <meta charset="UTF-8" />
     <title>{% block title %}Base{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="{{ url_for('static', path='/css/base.css') }}"
       rel="stylesheet"
     />
   </head>
+  {% endblock %}
   <body>
     <header><h1>Header Content</h1></header>
-
+    {# Flash Message #} {% for message in getFlashedMessages(request) %}
+    <div class="{{ message.category }}">{{ message.message}}</div>
+    {% endfor %} {# Flash Ends #}
     <main>{% block content %} {% endblock %}</main>
 
     <footer>Footer Content</footer>

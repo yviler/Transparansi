@@ -11,19 +11,20 @@ async def insertSessionToken(user: Users, token: str, db: AsyncSession) -> None:
     
     await db.commit()
 
-#not used yeet, will be used when entering a protected page
-async def verifySession(user: Users, request: Request, db: AsyncSession = Depends(get_db)) -> None:
+# dependency for token verification
+async def verifySession(request: Request, db: AsyncSession = Depends(get_db)) -> Users:
     session_id = request.cookies.get("session_id")
+
+    #if session_id is None, it will return user where session_token is Null
     user = (await db.execute(select(Users).where(Users.session_token == session_id))).scalars().first()
-    
+
     #check if session is expired, and later, check if correct user is using this session
     
-    #NoneType crash if token not found
-    if not session_id or session_id != user.session_token:
+    if not session_id or not user or session_id != user.session_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired session. Please login"
         )
-        
+    
     return user
 

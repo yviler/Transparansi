@@ -39,12 +39,14 @@ async def login(request: Request,
             request=request,
             name="login.html",
         )
+    
     userPassHash = user.password_hash
     if users.verifyPasswordWithHash(password, userPassHash):
         token = secrets.token_hex(32)
         await auth.insertSessionToken(user, token, db)
-        response.set_cookie(key="session_id", value=token, httponly=True)
-        return RedirectResponse(url="/dashboard", status_code=303)
+        redirect = RedirectResponse(url="/dashboard", status_code=303)
+        redirect.set_cookie(key="session_id", value=token, httponly=True)
+        return redirect
     else:
         flash.flash(request, "incorrect password", "error")
         return config.templates.TemplateResponse(
