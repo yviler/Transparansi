@@ -12,13 +12,18 @@
   </head>
   {% endblock %}
   <body>
-    <header class="flex items-center py-6 border-b-2 border-black">
+    <header class="flex items-center py-2 border-b-2 border-black">
       <div class="flex-1"></div>
       <div class="items-center text-l flex gap-24">
         <a href="{{request.url_for('dashboardPage')}}">dashboard</a>
       </div>
       <div class="flex justify-end flex-1">
-        <div class="card">{{user.username}}</div>
+        <div
+          class="pr-5 text-xs bg-neutral-primary-soft block max-w-sm p-3 border border-default rounded-base shadow-xs hover:bg-neutral-secondary-medium"
+        >
+          {{user.username}} <br />
+          {{user.clearance_level}}
+        </div>
       </div>
     </header>
     {# Flash Message #} {% for message in getFlashedMessages(request) %}
