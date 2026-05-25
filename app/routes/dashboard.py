@@ -7,6 +7,7 @@ from app.models.projects import Projects
 import app.utils.flash as flash
 import app.utils.auth as auth
 from typing import Annotated
+from app.models.users import Users
 
 router = APIRouter()
 
@@ -23,7 +24,10 @@ async def dashboardPage(request: Request, db:AsyncSession = Depends(get_db)):
     )
     
 @router.get("/create_project")
-def createProjectPage(request: Request, account: Annotated[dict, Depends(auth.verifySession)]):
+def createProjectPage(request: Request, 
+                      account: Annotated[Users, Depends(auth.verifySession)],
+                      requiredRoles: Annotated[Users, Depends(auth.roleRequired('Admin', 'Supervisor', 'Staff'))]
+                      ):
     return config.templates.TemplateResponse(
         context={
             "project": None,
@@ -34,7 +38,7 @@ def createProjectPage(request: Request, account: Annotated[dict, Depends(auth.ve
     
 @router.post("/create_project")
 def createProject(request: Request,
-                  account: Annotated[dict, Depends(auth.verifySession)],
+                  account: Annotated[Users, Depends(auth.verifySession)],
                   project_name: str=Form(...),
                   description: str=Form(""),
                   expected_budget: Decimal=Form(...)
