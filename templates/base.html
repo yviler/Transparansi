@@ -12,12 +12,26 @@
   </head>
   {% endblock %}
   <body>
-    <header><h1>Header Content</h1></header>
+    <header class="flex items-center py-6 border-b-2 border-black">
+      <div class="flex-1"></div>
+      <div class="items-center text-l flex gap-24">
+        <a href="{{request.url_for('dashboardPage')}}">dashboard</a>
+      </div>
+      <div class="flex justify-end flex-1">
+        <div class="card">{{user.username}}</div>
+      </div>
+    </header>
     {# Flash Message #} {% for message in getFlashedMessages(request) %}
     <div class="{{ message.category }}">{{ message.message}}</div>
     {% endfor %} {# Flash Ends #}
-    <main>{% block content %} {% endblock %}</main>
+    <main class="py-4">{% block content %} {% endblock %}</main>
 
-    <footer>Footer Content</footer>
+    <footer
+      class="w-full items-center flex flex-col mt-auto fixed bottom-0 py-4"
+    >
+      <div class="justify-center items-center flex">
+        <p>Footer Content</p>
+      </div>
+    </footer>
   </body>
 </html>

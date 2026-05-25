@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, Depends, Form
 import config
+from fastapi.responses import RedirectResponse
 from app.utils.projects import createProjectList
 from app.database import get_db, AsyncSession
 from decimal import Decimal
@@ -12,11 +13,13 @@ from app.models.users import Users
 router = APIRouter()
 
 @router.get("/dashboard")
-async def dashboardPage(request: Request, db:AsyncSession = Depends(get_db)):
+async def dashboardPage(request: Request, 
+                        currentUser: Annotated[Users, Depends(auth.currentUser)],
+                        db:AsyncSession = Depends(get_db)):
     projectList = await createProjectList(db)
-    flash.flash(request, "test", "test")
     return config.templates.TemplateResponse(
         context={
+            "user": currentUser,
             "projects": projectList,
         },
         request=request,
@@ -26,7 +29,7 @@ async def dashboardPage(request: Request, db:AsyncSession = Depends(get_db)):
 @router.get("/create_project")
 def createProjectPage(request: Request, 
                       account: Annotated[Users, Depends(auth.verifySession)],
-                      requiredRoles: Annotated[Users, Depends(auth.roleRequired('Admin', 'Supervisor', 'Staff'))]
+                      requiredRoles: Annotated[Users, Depends(auth.roleRequired('admin'))]
                       ):
     return config.templates.TemplateResponse(
         context={
@@ -39,11 +42,13 @@ def createProjectPage(request: Request,
 @router.post("/create_project")
 def createProject(request: Request,
                   account: Annotated[Users, Depends(auth.verifySession)],
+                  requiredRoles: Annotated[Users, Depends(auth.roleRequired('admin'))],
                   project_name: str=Form(...),
                   description: str=Form(""),
                   expected_budget: Decimal=Form(...)
                   ):
     #TODO: implement checks first (if name is taken), and actual use proper values
+    '''
     project = Projects(
         id = 1,
         name = project_name,
@@ -53,4 +58,7 @@ def createProject(request: Request,
         supervisor_id = None, #TODO: set to user.id or user.employeeid (need to get user from dependency)
         finished_at = None,     
     )
-    return 1
+    '''
+    #flash successfully created and redirectResponse to dashboard
+    flash.flash(request, "Successfully created project", "success")
+    return RedirectResponse(url='/dashboard', status_code=303)

@@ -30,6 +30,17 @@ async def verifySession(request: Request,
     
     return user
 
+# dependancy to get user
+async def currentUser(request: Request,
+                  db: AsyncSession = Depends(get_db)) -> Users:
+    session_id = request.cookies.get("session_id") or None
+    
+    if not session_id:
+        return None
+    user = (await db.execute(select(Users).where(Users.session_token == session_id))).scalars().first()
+    
+    return user
+        
 # dependency for role checking
 def roleRequired(*role_required):
     async def roleCheck(user:Users = Depends(verifySession)) -> Users:
