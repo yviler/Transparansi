@@ -1,15 +1,25 @@
-{% extends "base.html" %} {% block title %} create project {% endblock %} {%
-block head %} {% endblock %} {% block content %}
-<div class="createProjectBox">
-  <form action="{{request.url_for('createProject')}}" method="post">
+{% extends "base.html" %} {% block title %} create project {% endblock %}{%
+block content %}
+<div class="border border-black items-center flex justify-center">
+  <form
+    class="p-10"
+    action="{{request.url_for('createProject')}}"
+    method="post"
+  >
     <label for="project_name">Name</label>
     <br />
-    <input type="text" name="project_name" required />
+    <input
+      type="text"
+      class="border border-gray-300"
+      name="project_name"
+      required
+    />
     <br />
     <label for="description">Description</label>
     <br />
     <input
       type="text"
+      class="border border-gray-300"
       name="description"
       value="{{ project.description if project else ''}}"
     />
@@ -19,6 +29,7 @@ block head %} {% endblock %} {% block content %}
     {# input for budget needs to be processed to show currency #}
     <input
       type="number"
+      class="border border-gray-300"
       name="expected_budget"
       required
       value="{{ project.expected_budget if project else ''}}"

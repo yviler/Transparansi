@@ -17,6 +17,7 @@ async def dashboardPage(request: Request,
                         currentUser: Annotated[Users, Depends(auth.currentUser)],
                         db:AsyncSession = Depends(get_db)):
     projectList = await createProjectList(db)
+    flash.flash(request, "TEST MESSAGE", "test")
     return config.templates.TemplateResponse(
         context={
             "user": currentUser,
