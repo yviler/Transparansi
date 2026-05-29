@@ -6,7 +6,7 @@ import uuid
 class Wallets(Base):
     __tablename__ = "wallets"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String, unique=True, primary_key=True, nullable=False, index=True)
     name = Column(String(100), unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     description = Column(String(255), nullable=True)
