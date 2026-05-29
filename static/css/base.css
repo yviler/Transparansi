@@ -1,7 +1,23 @@
 .success {
+  align-items: center;
+  background-color: aquamarine;
+  padding: 10px;
+  width: 20%;
+  margin-top: 10px;
+  border: 2px solid rgb(75, 75, 75);
+  border-radius: 5px;
+  margin-left: 10px;
 }
 
 .error {
+  align-items: center;
+  background-color: rgb(242, 39, 39);
+  padding: 10px;
+  width: 20%;
+  margin-top: 10px;
+  border: 2px solid rgb(75, 75, 75);
+  border-radius: 5px;
+  margin-left: 10px;
 }
 
 .test {

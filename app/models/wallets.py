@@ -11,7 +11,6 @@ class Wallets(Base):
     password_hash = Column(String, nullable=False)
     description = Column(String(255), nullable=True)
     wallet_type = Column(Enum('system', 'project', name='wallet_type'), nullable=False, default='project')
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
