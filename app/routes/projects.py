@@ -3,10 +3,13 @@ import config
 from fastapi.responses import RedirectResponse
 from decimal import Decimal
 from app.models.projects import Projects
+from app.database import get_db, AsyncSession
 import app.utils.flash as flash
 import app.utils.auth as auth
+import app.utils.projects as projects
 from typing import Annotated
 from app.models.users import Users
+from sqlalchemy.exc import SQLAlchemyError
 
 router = APIRouter()
 
@@ -27,25 +30,54 @@ def createProjectPage(request: Request,
     )
     
 @router.post("/create_project")
-def createProject(request: Request,
+async def createProject(request: Request,
                   account: Annotated[Users, Depends(auth.verifySession)],
                   currentUser: Annotated[Users, Depends(auth.currentUser)],
                   requiredRoles: Annotated[Users, Depends(auth.roleRequired('admin'))],
                   project_name: str=Form(...),
                   description: str=Form(""),
-                  expected_budget: Decimal=Form(...)
+                  expected_budget: Decimal=Form(...),
+                  db:AsyncSession = Depends(get_db)
                   ):
-    #TODO: implement checks first (if name is taken), and actual use proper values
-    project = Projects(
-        id = 1,
-        name = project_name,
+
+
+    if await projects.getProjectByName(db, project_name):
+        flash.flash(request,f"Project {project_name} already exists", "error")
+        return config.templates.TemplateResponse(
+            context={
+                "project": {
+                    "description": description,
+                    "expected_budget": expected_budget,
+                }
+            },
+            request=request,
+            name="create_project.html"
+        )
+    
+    new_project = Projects(
+        project_name = project_name,
         description = description,
         expected_budget = expected_budget,
         status = "pending",
+        wallet_id=wallet_id,
         supervisor_id = currentUser.employee_id,
         finished_at = None,     
     )
-    
-    #flash successfully created and redirectResponse to dashboard
-    flash.flash(request, f"Successfully created project: {project_name}", "success")
-    return RedirectResponse(url='/dashboard', status_code=303)
+
+    try:
+        await projects.insertProject(db, new_project)
+        flash.flash(request, f"Successfully created project: {project_name}", "success")
+        return RedirectResponse(url='/dashboard', status_code=303)
+    except SQLAlchemyError as e:
+        flash.flash(request, f"Error creating project: {e}", "error")
+        return config.templates.TemplateResponse(
+            context={
+                "project": {
+                    "project_name": project_name,
+                    "description": description,
+                    "expected_budget": expected_budget,
+                }
+            },
+            request=request,
+            name="create_project.html"
+        )

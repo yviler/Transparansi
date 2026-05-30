@@ -1,17 +1,13 @@
-{% extends "base.html" %} {% block title %} create project {% endblock %}{%
-block content %}
+{% extends "base.html" %} {% block title %} create wallet {% endblock %}{% block
+content %}
 <div class="border border-black items-center flex justify-center">
-  <form
-    class="p-10"
-    action="{{request.url_for('createProject')}}"
-    method="post"
-  >
-    <label for="project_name">Name</label>
+  <form class="p-10" action="{{request.url_for('createwallet')}}" method="post">
+    <label for="wallet_name">Name</label>
     <br />
     <input
       type="text"
-      name="project_name"
-      value="{{project.project_name if project else ''}}"
+      name="wallet_name"
+      value="{{wallet.wallet_name if wallet else ''}}"
       required
     />
     <br />
@@ -20,17 +16,16 @@ block content %}
     <input
       type="text"
       name="description"
-      value="{{ project.description if project else ''}}"
+      value="{{ wallet.description if wallet else ''}}"
     />
     <br />
     <label for="expected_budget">Initial Expected Budget</label>
     <br />
-    {# input for budget needs to be processed to show currency #}
     <input
       type="number"
       name="expected_budget"
       required
-      value="{{ project.expected_budget if project else ''}}"
+      value="{{ wallet.expected_budget if wallet else ''}}"
       min="0"
     />
     <br />

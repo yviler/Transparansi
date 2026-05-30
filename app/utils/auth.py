@@ -6,9 +6,9 @@ from datetime import datetime, timezone, timedelta
 
 from app.utils import flash
 
-
 async def insertSessionToken(user: Users,
-                             token: str, db: AsyncSession) -> None:
+                             token: str, 
+                             db: AsyncSession) -> None:
     user.session_token = token
     user.session_token_expires_at = datetime.now(timezone.utc) + timedelta(minutes=30)
     db.add(user)

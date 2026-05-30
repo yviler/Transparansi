@@ -7,7 +7,7 @@ class Projects(Base):
     __tablename__ = "projects"
     
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    name = Column(String(100), unique=True, index=True, nullable=False)
+    project_name = Column(String(100), unique=True, index=True, nullable=False)
     description = Column(String, nullable=True)
     expected_budget = Column(Numeric, nullable=False)
     status = Column(Enum('pending', 'ongoing', 'delayed', 'finished', 'cancelled', name='project_status'), nullable=False, default='pending')

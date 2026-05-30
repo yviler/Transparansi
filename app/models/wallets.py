@@ -7,7 +7,7 @@ class Wallets(Base):
     __tablename__ = "wallets"
     
     id = Column(UUID(as_uuid=True), unique=True, primary_key=True, nullable=False, index=True, default=uuid.uuid4)
-    name = Column(String(100), unique=True, index=True, nullable=False)
+    wallet_name = Column(String(100), unique=True, index=True, nullable=False)
     description = Column(String(255), nullable=True)
     wallet_type = Column(Enum('system', 'project', name='wallet_type'), nullable=False, default='project')
     is_active = Column(Boolean, nullable=False, default=True)
