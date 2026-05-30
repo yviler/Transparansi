@@ -30,3 +30,32 @@
   border-radius: 5px;
   margin-left: 10px;
 }
+
+input,
+textarea,
+select {
+  border: 1px solid #000000;
+  border-radius: 4px;
+  padding: 6px 10px;
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #000000;
+}
+
+button,
+input[type="submit"] {
+  cursor: pointer;
+  border: 1px solid black;
+  padding: 4px 12px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #f3f4f6;
+}

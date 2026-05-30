@@ -8,18 +8,12 @@ block content %}
   >
     <label for="project_name">Name</label>
     <br />
-    <input
-      type="text"
-      class="border border-gray-300"
-      name="project_name"
-      required
-    />
+    <input type="text" name="project_name" required />
     <br />
     <label for="description">Description</label>
     <br />
     <input
       type="text"
-      class="border border-gray-300"
       name="description"
       value="{{ project.description if project else ''}}"
     />
@@ -29,18 +23,13 @@ block content %}
     {# input for budget needs to be processed to show currency #}
     <input
       type="number"
-      class="border border-gray-300"
       name="expected_budget"
       required
       value="{{ project.expected_budget if project else ''}}"
     />
     <br />
     <a href="{{request.url_for('dashboardPage')}}">cancel</a>
-    <input
-      class="border border-black py-1 px-2 my-4"
-      type="submit"
-      value="submit"
-    />
+    <input type="submit" value="submit" />
   </form>
 </div>
 

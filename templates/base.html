@@ -26,12 +26,16 @@
           {{user.full_name}} <br />
           {{user.clearance_level}} {% else %}
           <p>Guest</p>
+          <a href="{{request.url_for('login')}}">login</a>
           {% endif %}
         </div>
       </div>
     </header>
     {# Flash Message #} {% for message in getFlashedMessages(request) %}
-    <div class="{{ message.category }}">{{ message.message}}</div>
+    <div class="{{ message.category }}">
+      {{ message.message}}
+      <button onclick="this.closest('div').remove()">ok</button>
+    </div>
     {% endfor %} {# Flash Ends #}
     <main class="p-4">{% block content %} {% endblock %}</main>
 
