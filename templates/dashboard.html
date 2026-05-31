@@ -1,14 +1,21 @@
-<!-- prettier-ignore -->
 {% extends "base.html" %} 
 {% block title %} dashboard {% endblock %} 
+
 {% block content %} 
-{% if projects %} 
-    {% for project in projects %} 
-        {{ project }} 
-    {%endfor %} 
-{% else %}
-<p>no projects yet</p>
-{% endif %} {% if user.clearance_level == 'admin' %}
+
+{% if user.clearance_level in ['admin','staff','supervisor'] %}
+    {% if personalProjects %} 
+        {% for project in personalProjects %} 
+            {{ project.project_name }}
+            <br />
+        {%endfor %} 
+    {% else %}
+        <p>no projects assigned yet</p>
+    {% endif%} 
+{% endif %}
+{% if user.clearance_level == 'admin' %}
 <a href="{{request.url_for('createProjectPage')}}">open a project</a>
+<br />
 <a href="{{request.url_for('createWalletPage')}}">open a wallet</a>
-{% else %} {% endif %} {% endblock %}
+{% else %} {% endif %} 
+{% endblock %}

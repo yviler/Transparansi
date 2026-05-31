@@ -1,11 +1,6 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ error.status_code }}</title>
-  </head>
-  <body>
-    <div>{{ error }}</div>
-  </body>
-</html>
+{% extends "base.html" %} {% block title %} {{ error.status_code }} {% endblock
+%}{% block content %}
+<div>{{ error }}</div>
+{% if error.status_code == 401 %}
+<a href="{{request.url_for('login')}}">login here</a>
+{% endif %} {% endblock %}

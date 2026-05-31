@@ -22,8 +22,6 @@ async def verifySession(request: Request,
 
     user = (await db.execute(select(Users).where(Users.session_token == session_id))).scalars().first()
 
-    
-    #create HTTPException handler for template response
     if not session_id or not user or user.session_token_expires_at < datetime.now(timezone.utc):
         # delete session_token and session_token_expires_at and logout
         raise HTTPException(

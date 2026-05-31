@@ -23,6 +23,20 @@ block content %}
       value="{{ project.description if project else ''}}"
     />
     <br />
+    <label for="wallet_id">Budget origin</label>
+    <br />
+    {% if wallets %}
+    <select name="wallet_id">
+      {% for wallet in wallets %}
+      <option value="{{wallet.id}}" id="{{wallet.id}}">
+        {{wallet.wallet_name}}
+      </option>
+      {% endfor %}
+    </select>
+    {% else %}
+    <p>no unused wallets</p>
+    {% endif %}
+    <br />
     <label for="expected_budget">Initial Expected Budget</label>
     <br />
     {# input for budget needs to be processed to show currency #}

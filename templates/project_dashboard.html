@@ -1,0 +1,7 @@
+{% extends "base.html" %} {% block title %} projects {% endblock %} {% block
+content %} {% if projects %} {% for project in projects %}
+<div class="">
+  <p>{{ project.project_name }}</p>
+  <a href="#">access this project</a>
+</div>
+{% endfor %} {% endif %} {% endblock %}

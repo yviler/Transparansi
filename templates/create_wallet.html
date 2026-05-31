@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %} create wallet {% endblock %}{% block
 content %}
 <div class="border border-black items-center flex justify-center">
-  <form class="p-10" action="{{request.url_for('createwallet')}}" method="post">
+  <form class="p-10" action="{{request.url_for('createWallet')}}" method="post">
     <label for="wallet_name">Name</label>
     <br />
     <input
@@ -19,15 +19,16 @@ content %}
       value="{{ wallet.description if wallet else ''}}"
     />
     <br />
-    <label for="expected_budget">Initial Expected Budget</label>
+    <label for="wallet_type">Type</label>
     <br />
-    <input
-      type="number"
-      name="expected_budget"
-      required
-      value="{{ wallet.expected_budget if wallet else ''}}"
-      min="0"
-    />
+    <label>
+      <input type="radio" name="wallet_type" value="system" />
+      system
+    </label>
+    <label>
+      <input type="radio" name="wallet_type" value="project" />
+      project
+    </label>
     <br />
     <a href="{{request.url_for('dashboardPage')}}">cancel</a>
     <input type="submit" value="submit" />

@@ -12,11 +12,13 @@ router = APIRouter()
 async def dashboardPage(request: Request, 
                         currentUser: Annotated[Users, Depends(auth.currentUser)],
                         db:AsyncSession = Depends(get_db)):
-    projectList = await createProjectList(db)
+    #TODO: not projectList, but personalProject (project where we are the supervisor/where we have tasks)
+    assignedProjects = None
+    
     return config.templates.TemplateResponse(
         context={
             "user": currentUser,
-            "projects": projectList,
+            "personalProjects": assignedProjects
         },
         request=request,
         name="dashboard.html",
