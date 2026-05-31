@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.get("/create_project")
-def createProjectPage(request: Request, 
+def createWalletPage(request: Request, 
                       account: Annotated[Users, Depends(auth.verifySession)],
                       currentUser: Annotated[Users, Depends(auth.currentUser)],
                       requiredRoles: Annotated[Users, Depends(auth.roleRequired('admin'))]

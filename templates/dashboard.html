@@ -10,4 +10,5 @@
 <p>no projects yet</p>
 {% endif %} {% if user.clearance_level == 'admin' %}
 <a href="{{request.url_for('createProjectPage')}}">open a project</a>
+<a href="{{request.url_for('createWalletPage')}}">open a wallet</a>
 {% else %} {% endif %} {% endblock %}
