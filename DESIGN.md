@@ -47,20 +47,19 @@ System Wallet
 
 ### users
 
-| Field                    | Type        | Notes                              |
-| ------------------------ | ----------- | ---------------------------------- | ------ |
-| id                       | UUID/int PK |                                    |
-| username                 | string      | unique                             |
-| passwordHash             | string      |                                    |
-| fullName                 | string      |                                    |
-| dateOfBirth              | date        |                                    |
-| clearanceLevel           | enum        | observer, staff, supervisor, admin |
-| employeeID               | string      | unique                             |
-| isActive                 | bool        | default true                       |
-| dateJoined               | datetime    |                                    |
-| dateLeft                 | datetime    | nullable                           |
-| session_token            | string      | nullable                           | unique |
-| session_token_expires_at | datetime    | nullable                           |
+| Field                    | Type     | Notes                                    |
+| ------------------------ | -------- | ---------------------------------------- |
+| id                       | UUID PK  |                                          |
+| username                 | string   | unique                                   |
+| password_hash            | string   |                                          |
+| full_name                | string   |                                          |
+| date_of_birth            | date     |                                          |
+| clearance_level          | enum     | observer, staff, supervisor, admin       |
+| is_active                | bool     | default true                             |
+| date_joined              | datetime |                                          |
+| date_left                | datetime | nullable                                 |
+| session_token            | string   | nullable, unique                         |
+| session_token_expires_at | datetime | nullable                                 |
 
 ---
 
