@@ -18,5 +18,5 @@ CREATE TABLE IF NOT EXISTS users (
     date_joined     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     date_left       TIMESTAMPTZ,
     session_token   VARCHAR(255) UNIQUE,
-    session_token_expires_at TIMESTAMPTZ,
+    session_token_expires_at TIMESTAMPTZ
 );
