@@ -37,7 +37,7 @@ accountable.
 - **Alembic** — Database migrations
 - **PostgreSQL** — Database
 - **Pydantic** — Data validation
-- **JWT** — Authentication
+- **Session tokens** — Authentication (cookie-based, stored in DB)
 
 ---
 

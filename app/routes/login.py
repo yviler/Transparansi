@@ -97,7 +97,6 @@ async def createUser(request:Request,
             password_hash=hashedPassword,
             full_name=full_name,
             date_of_birth=date_of_birth,
-            employee_id=secrets.token_hex(4).upper()
         )
     
 

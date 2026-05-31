@@ -66,16 +66,17 @@ System Wallet
 
 ### wallets
 
-| Field       | Type          | Notes                          |
-| ----------- | ------------- | ------------------------------ |
-| id          | PK            |                                |
-| name        | string        |                                |
-| description | string        | nullable                       |
-| type        | enum          | system, project                |
-| projectID   | FK → projects | nullable, null = system wallet |
-| isActive    | bool          |                                |
-| createdAt   | datetime      |                                |
-| createdBy   | FK → users    |                                |
+| Field       | Type       | Notes           |
+| ----------- | ---------- | --------------- |
+| id          | UUID PK    |                 |
+| name        | string     | unique          |
+| description | string     | nullable        |
+| type        | enum       | system, project |
+| isActive    | bool       |                 |
+| createdAt   | datetime   |                 |
+| createdBy   | FK → users |                 |
+
+> Projects reference wallets (via `wallet_id` on the projects table), not the other way around.
 
 ---
 
@@ -198,9 +199,10 @@ Tracks modifications on any record. Linked records store a list of change IDs.
 
 Get this full flow working end to end before adding anything else:
 
-- [ ] Auth (session-based, role-based)
-- [ ] System wallet + deposit
-- [ ] Create project + allocate budget
+- [x] Auth (session-based, role-based) — 2026-05-20
+- [x] Create wallet (system or project type) — 2026-06-01
+- [ ] System wallet deposit
+- [ ] Create project + allocate budget from wallet
 - [ ] Create tasks + subtasks
 - [ ] Submit bill
 - [ ] Approve/reject bill → wallet deduction
