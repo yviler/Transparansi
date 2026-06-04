@@ -18,3 +18,7 @@ async def getActiveUnusedWalletList(db:AsyncSession) -> list:
 async def insertWalletObj(db:AsyncSession, new_wallet: Wallets) -> None:
     db.add(new_wallet)
     await db.commit()
+
+#return wallet info and calculation (or in another function for the calculation)   
+async def getWalletInfo(db:AsyncSession, wallet_id: int) -> Wallets:
+    return (await db.execute(select(Wallets).where(Wallets.id == wallet_id)))

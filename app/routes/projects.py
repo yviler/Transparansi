@@ -104,6 +104,7 @@ async def projectDashboard(request: Request,
 
     return config.templates.TemplateResponse(
         context={
+            "user": currentUser,
             "projects": projectList
         },
         request=request,

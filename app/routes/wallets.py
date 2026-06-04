@@ -13,6 +13,20 @@ import app.utils.flash as flash
 
 router = APIRouter()
 
+@router.get("/wallets")
+async def walletDashboard(request: Request,
+                          currentUser: Annotated[Users, Depends(auth.verifySession)],
+                          db: AsyncSession = Depends(get_db)
+                        ):
+    walletList = await wallet.getWalletList(db)
+    
+    return config.templates.TemplateResponse(
+        context={
+            "wallets": walletList
+        },
+        request=request,
+        name="wallet_dashboard.html"
+    )
 
 @router.get("/create_wallet")
 def createWalletPage(request: Request, 

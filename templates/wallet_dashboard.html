@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block title %} wallets {% endblock %} {% block
+content %} {% if wallets %} {% for wallet in wallets %}
+<div class="">
+  <p>{{ wallet.wallet_name }}</p>
+  <a href="#">access this wallet</a>
+</div>
+{% endfor %} {% else %}
+<h2>no wallets exists yet</h2>
+{% endif %} {% endblock %}
