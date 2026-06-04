@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Numeric, String, TIMESTAMP, Enum, func, ForeignKey
+from sqlalchemy import Column, Numeric, String, TIMESTAMP, Enum, func, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
+from sqlalchemy.orm import relationship
 import uuid
 
 class Projects(Base):
@@ -17,24 +18,28 @@ class Projects(Base):
     finished_at = Column(TIMESTAMP(timezone=True), nullable=True)   
     
 class Tasks(Base):
-    __tablename__ = " tasks"
+    __tablename__ = "tasks"
     
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     task_name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     projectID = Column(UUID, ForeignKey("projects.id"), nullable=False, index=True)
     parentTaskID = Column(UUID, ForeignKey("tasks.id"), nullable=True, index=True)
+    assignees = relationship("Users", secondary="task_assignees", 
+                            primaryjoin="Tasks.id == TaskAssignees.task_id",
+                            secondaryjoin="TaskAssignees.user_id == Users.id")
     status = Column(Enum('pending', 'ongoing', 'completed', 'cancelled', name='task_status'), nullable=False, default='pending')
-    # should be a list of UUID instead, (many to one) for users.id
-    assignees = Column(UUID, ForeignKey("users.id"), nullable=True)
+    created_by = Column(UUID, ForeignKey("users.id"),nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     finished_at = Column(TIMESTAMP(timezone=True), nullable=True)
-    
-    
-# what if we want to remove a user, i dont want deletes, make revoked = bool default false
+        
 class TaskAssignees(Base):
     __tablename__ = "task_assignees"
     
     id = Column(UUID(as_uuid=True), primary_key=True, nullable=False, index=True, default=uuid.uuid4)
     task_id = Column(UUID, ForeignKey("tasks.id"), nullable=False, index=True)
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False, index=True)
+    assigned_by = Column(UUID, ForeignKey("users.id"), nullable=False)
+    assigned_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
+    is_revoked = Column(Boolean, nullable=False, default=False)
+    revoked_at = Column(TIMESTAMP(timezone=True), nullable=True)
