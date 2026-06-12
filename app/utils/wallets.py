@@ -20,5 +20,5 @@ async def insertWalletObj(db:AsyncSession, new_wallet: Wallets) -> None:
     await db.commit()
 
 #return wallet info and calculation (or in another function for the calculation)   
-async def getWalletInfo(db:AsyncSession, wallet_id: int) -> Wallets:
-    return (await db.execute(select(Wallets).where(Wallets.id == wallet_id)))
+async def getWalletInfo(db:AsyncSession, wallet_id: str) -> Wallets:
+    return (await db.execute(select(Wallets).where(Wallets.id == wallet_id))).scalars().first()

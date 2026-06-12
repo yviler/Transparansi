@@ -1,9 +1,16 @@
-{% extends "base.html" %} {% block title %} wallets {% endblock %} {% block
-content %} {% if wallets %} {% for wallet in wallets %}
-<div class="">
-  <p>{{ wallet.wallet_name }}</p>
-  <a href="#">access this wallet</a>
-</div>
-{% endfor %} {% else %}
+{% extends "base.html" %} 
+{% block title %} wallets {% endblock %} 
+{% block  content %} 
+{% if wallets %} 
+  <div class="flex">
+    {% for wallet in wallets %}
+      <div class="border border-black p-2">
+        <p>{{ wallet.wallet_name }}</p>
+        <a href="{{request.url_for('walletInfoPage', wallet_id=wallet.id)}}">access this wallet</a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
 <h2>no wallets exists yet</h2>
-{% endif %} {% endblock %}
+{% endif %} 
+{% endblock %}

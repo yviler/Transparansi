@@ -1,2 +1,4 @@
 templates/dashboard.html
 templates/project_dashboard.html
+templates/wallet_dashboard.html
+templates/wallet_info.html

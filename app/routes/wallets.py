@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 import app.utils.wallets as wallet
 from app.database import get_db, AsyncSession
 import app.utils.flash as flash
+import uuid
 
 router = APIRouter()
 
@@ -26,6 +27,24 @@ async def walletDashboard(request: Request,
         },
         request=request,
         name="wallet_dashboard.html"
+    )
+
+@router.get("/wallet/{wallet_id:str}")
+async def walletInfoPage(request: Request, 
+                      account: Annotated[Users, Depends(auth.verifySession)],
+                      currentUser: Annotated[Users, Depends(auth.currentUser)],
+                      wallet_id:str,
+                      db: AsyncSession = Depends(get_db)
+                    ):
+    
+    walletInfo = await wallet.getWalletInfo(db, wallet_id)
+
+    return config.templates.TemplateResponse(
+        context = {
+            "wallet" :  walletInfo,
+        },
+        request = request,
+        name="wallet_info.html",
     )
 
 @router.get("/create_wallet")

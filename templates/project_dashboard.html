@@ -1,13 +1,15 @@
 {% extends "base.html" %} 
 {% block title %} projects {% endblock %} 
 {% block content %} 
-  {% if projects %} 
-    {% for project in projects %}
-      <div class="">
-        <p>{{ project.project_name }}</p>
-        <a href="#">access this project</a>
-      </div>
-    {% endfor %} 
+  {% if projects %}
+    <div class="flex">
+      {% for project in projects %}
+        <div class="border border-black p-2">
+          <p>{{ project.project_name }}</p>
+          <a href="#">access this project</a>
+        </div>
+      {% endfor %} 
+    </div>
   {% else %}
     <h2>no projects exists yet</h2>
   {% endif %} 
