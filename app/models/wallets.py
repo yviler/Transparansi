@@ -23,7 +23,7 @@ class Bills(Base):
     amount = Column(Numeric, nullable=False)
     task_id = Column(UUID(as_uuid=True), ForeignKey('tasks.id'), index=True, nullable=False)
     submittedBy = Column(UUID(as_uuid=True), ForeignKey('users.id'), index=True, nullable=False)
-    status = Column(Enum('pending', 'approved', 'rejected', 'cancelled'))
+    status = Column(Enum('pending', 'approved', 'rejected', 'cancelled', name='bill_status'), nullable=False, default='pending')
     approved_by = Column(UUID(as_uuid=True), ForeignKey('users.id'), index=True, nullable=True)
     #for all wallet_tx, where wallet_tx.bill_id = id
     transaction_ids = relationship("WalletTransactions")
