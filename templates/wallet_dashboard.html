@@ -4,7 +4,7 @@
 {% if wallets %} 
   <div class="flex">
     {% for wallet in wallets %}
-      <div class="border border-black p-2">
+      <div class="border border-black p-2 my-2 mx-4">
         <p>{{ wallet.wallet_name }}</p>
         <a href="{{request.url_for('walletInfoPage', wallet_id=wallet.id)}}">access this wallet</a>
       </div>

@@ -1,42 +1,53 @@
 {% extends "base.html" %} 
 {% block title %} {{ wallet.wallet_name }} info {% endblock %} 
 {% block content %}
-<div>
-    <table class="border-black border-2">
+<div class="flex">
+    <table id="general info"class="border-black border-2 mx-6">
+        <caption>Basic Info</caption>
+        <tr class="border border-black">
+            <th>ID</th>
+            <td>{{ wallet.id }}</td>
+        </tr>
+        <tr class="border border-black">
+            <th>name</th>
+            <td>{{ wallet.wallet_name }}</td>
+        </tr>
         <tr class="border border-black">
             <th>
-                ID
+                description
             </th>
+            <td>{{ wallet.description }}</td>
+        </tr>
+        <tr class="border border-black">
             <th>
-                Name 
+                type
             </th>
-            <th>
-                Description 
-            </th>
-            <th>
-                created at
-            </th>
+            <td>
+                {{ wallet.wallet_type }}
+            </td>
+        </tr>
+        <tr class="border border-black">
             <th>
                 creator
-            </th>
-        </tr>
-        <tr>
-            <td>
-                {{ wallet.id }}
-            </td>
-            <td>
-                {{ wallet.wallet_name }}
-            </td>
-            <td>
-                {{ wallet.description }}
-            </td>
-            <td>
-                {{ wallet.created_at }}
-            </td>
+            </th>   
             <td>
                 {{ wallet.created_by }}
             </td>
         </tr>
+        <tr class="border border-black">
+            <th>
+                time created
+            </th>
+            <td>
+                {{ wallet.created_at }}
+            </td>
+        </tr>
     </table>
+    <div class="border-black border-2 p-4">
+        <h2>Current Available Funds</h2>
+        {% for income in incomes %}
+            {{ income.amount }}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

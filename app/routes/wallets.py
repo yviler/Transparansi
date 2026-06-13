@@ -5,18 +5,17 @@ from sqlalchemy.exc import SQLAlchemyError
 import app.utils.auth as auth
 from typing import Annotated
 from app.models.users import Users
-from app.models.wallets import Wallets
+from app.models.wallets import Wallets, WalletTransactions
 from datetime import datetime, timezone
 import app.utils.wallets as wallet
 from app.database import get_db, AsyncSession
 import app.utils.flash as flash
-import uuid
+from decimal import Decimal
 
 router = APIRouter()
 
 @router.get("/wallets")
 async def walletDashboard(request: Request,
-                          currentUser: Annotated[Users, Depends(auth.verifySession)],
                           db: AsyncSession = Depends(get_db)
                         ):
     walletList = await wallet.getWalletList(db)
@@ -31,17 +30,19 @@ async def walletDashboard(request: Request,
 
 @router.get("/wallet/{wallet_id:str}")
 async def walletInfoPage(request: Request, 
-                      account: Annotated[Users, Depends(auth.verifySession)],
-                      currentUser: Annotated[Users, Depends(auth.currentUser)],
                       wallet_id:str,
                       db: AsyncSession = Depends(get_db)
                     ):
     
     walletInfo = await wallet.getWalletInfo(db, wallet_id)
 
+    expenses, incomes = await wallet.getWalletLedger(db,wallet_id)
+    
     return config.templates.TemplateResponse(
         context = {
             "wallet" :  walletInfo,
+            "expenses": expenses,
+            "incomes": incomes,
         },
         request = request,
         name="wallet_info.html",
@@ -109,3 +110,24 @@ async def createWallet(request: Request,
             request=request,
             name="create_wallet.html"
         )
+        
+#TODO: still boilerplate, dont use
+@router.post("/transfer/{from_wallet_id:str}/{to_wallet_id:str}")
+async def transferFunds(from_wallet_id:str, 
+                        to_wallet_id:str, 
+                        #amount: str = Form(...),
+                        db:AsyncSession = Depends(get_db)):
+    
+    new_transaction = WalletTransactions(
+        tx_name = "test deposit",
+        amount = Decimal(1000000),
+        tx_type = "allocation",
+        from_wallet_id = from_wallet_id,
+        to_wallet_id = to_wallet_id,
+    )
+    
+    try:
+        await wallet.transferFund(db, new_transaction)
+        print("success")
+    except SQLAlchemyError as e:
+        print("error", e)
