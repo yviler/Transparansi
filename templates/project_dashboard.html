@@ -6,7 +6,7 @@
       {% for project in projects %}
         <div class="border border-black p-2">
           <p>{{ project.project_name }}</p>
-          <a href="#">access this project</a>
+          <a href="{{request.url_for('projectInfoPage', project_id=project.id)}}">access this project</a>
         </div>
       {% endfor %} 
     </div>

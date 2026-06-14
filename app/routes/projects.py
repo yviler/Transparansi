@@ -110,3 +110,21 @@ async def projectDashboard(request: Request,
         request=request,
         name="project_dashboard.html",
     )
+    
+@router.get("/project/{project_id:str}")
+async def projectInfoPage(request: Request,
+                          project_id:str,
+                          db:AsyncSession = Depends(get_db)
+                            ):
+    
+    projectInfo = await projects.getProject(db, project_id)
+    projectTasks = await projects.getProjectTasks(db, project_id)
+    
+    return config.templates.TemplateResponse(
+        context={
+            "project": projectInfo,
+            "tasks": projectTasks,
+        },
+        request=request,
+        name = "project_info.html",
+    )

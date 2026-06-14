@@ -116,6 +116,7 @@ async def createWallet(request: Request,
             name="create_wallet.html"
         )
       
+#for testing
 @router.get("/test/{wallet_id}")
 async def test(wallet_id:str, db:AsyncSession = Depends(get_db)):
     expenses, incomes = await wallet.getWalletLedger(db, wallet_id)
