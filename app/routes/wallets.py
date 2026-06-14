@@ -45,6 +45,7 @@ async def walletInfoPage(request: Request,
             "wallet" :  walletInfo,
             "expenses": expenses,
             "incomes": incomes,
+            "ledger": expenses + incomes, # sort by created_at later
             "total_income": total_income,
             "total_expense": total_expense,
         },
