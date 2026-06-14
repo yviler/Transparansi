@@ -36,13 +36,17 @@ async def walletInfoPage(request: Request,
     
     walletInfo = await wallet.getWalletInfo(db, wallet_id)
 
-    expenses, incomes = await wallet.getWalletLedger(db,wallet_id)
+    expenses, incomes = await wallet.getWalletLedger(db, wallet_id)
+    
+    total_income, total_expense = wallet.calculateCurrentFunds(expenses, incomes)
     
     return config.templates.TemplateResponse(
         context = {
             "wallet" :  walletInfo,
             "expenses": expenses,
             "incomes": incomes,
+            "total_income": total_income,
+            "total_expense": total_expense,
         },
         request = request,
         name="wallet_info.html",
@@ -110,7 +114,12 @@ async def createWallet(request: Request,
             request=request,
             name="create_wallet.html"
         )
-        
+      
+@router.get("/test/{wallet_id}")
+async def test(wallet_id:str, db:AsyncSession = Depends(get_db)):
+    expenses, incomes = await wallet.getWalletLedger(db, wallet_id)
+    print(wallet.calculateCurrentFunds(expenses, incomes))
+    
 #TODO: still boilerplate, dont use
 @router.post("/transfer/{from_wallet_id:str}/{to_wallet_id:str}")
 async def transferFunds(from_wallet_id:str, 

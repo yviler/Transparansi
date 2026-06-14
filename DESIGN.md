@@ -13,9 +13,11 @@ touch it. Built around the idea that visibility alone is a form of accountabilit
 | Layer      | Tool                                        |
 | ---------- | ------------------------------------------- |
 | Framework  | FastAPI                                     |
-| ORM        | SQLAlchemy                                  |
+| ORM        | SQLAlchemy (async)                          |
 | Migrations | Alembic                                     |
 | Database   | PostgreSQL                                  |
+| Templating | Jinja2                                      |
+| Styling    | Tailwind CSS                                |
 | Validation | Pydantic (built into FastAPI)               |
 | Auth       | Session-based (Starlette SessionMiddleware) |
 
@@ -68,12 +70,12 @@ System Wallet
 | Field       | Type       | Notes           |
 | ----------- | ---------- | --------------- |
 | id          | UUID PK    |                 |
-| name        | string     | unique          |
+| wallet_name | string     | unique          |
 | description | string     | nullable        |
-| type        | enum       | system, project |
-| isActive    | bool       |                 |
-| createdAt   | datetime   |                 |
-| createdBy   | FK → users |                 |
+| wallet_type | enum       | system, project |
+| is_active   | bool       |                 |
+| created_at  | datetime   |                 |
+| created_by  | FK → users |                 |
 
 > Projects reference wallets (via `wallet_id` on the projects table), not the other way around.
 
@@ -83,20 +85,20 @@ System Wallet
 
 Immutable. No deletes. Refunds/cancellations create a new entry.
 
-| Field        | Type                    | Notes                                                   |
-| ------------ | ----------------------- | ------------------------------------------------------- |
-| id           | PK                      |                                                         |
-| name         | string                  |                                                         |
-| amount       | decimal                 |                                                         |
-| type         | enum                    | deposit, allocation, bill_payment, refund, cancellation |
-| fromWalletID | FK → wallets            | nullable                                                |
-| toWalletID   | FK → wallets            | nullable                                                |
-| billID       | FK → bills              | nullable, used when type = bill_payment                 |
-| isCancelled  | bool                    | default false                                           |
-| refundID     | FK → walletTransactions | nullable, points to original tx if this is a refund     |
-| description  | string                  | nullable                                                |
-| createdAt    | datetime                |                                                         |
-| cancelledAt  | datetime                | nullable                                                |
+| Field          | Type                      | Notes                                                                  |
+| -------------- | ------------------------- | ---------------------------------------------------------------------- |
+| id             | UUID PK                   |                                                                        |
+| tx_name        | string                    |                                                                        |
+| amount         | decimal                   |                                                                        |
+| tx_type        | enum                      | deposit, allocation, bill_payment, refund, cancellation, pending       |
+| from_wallet_id | FK → wallets              | nullable                                                               |
+| to_wallet_id   | FK → wallets              | nullable                                                               |
+| bill_id        | FK → bills                | nullable, used when tx_type = bill_payment                             |
+| is_cancelled   | bool                      | default false                                                          |
+| refund_id      | FK → wallet_transactions  | nullable, points to original tx if this is a refund                    |
+| description    | string                    | nullable                                                               |
+| created_at     | datetime                  |                                                                        |
+| cancelled_at   | datetime                  | nullable                                                               |
 
 ---
 
@@ -125,39 +127,41 @@ Recursive. A task can be a subtask by pointing parentTaskID to another task.
 
 | Field        | Type          | Notes                                  |
 | ------------ | ------------- | -------------------------------------- |
-| id           | PK            |                                        |
-| name         | string        |                                        |
+| id           | UUID PK       |                                        |
+| task_name    | string        |                                        |
 | description  | string        | nullable                               |
 | projectID    | FK → projects |                                        |
 | parentTaskID | FK → tasks    | nullable, null = top-level task        |
 | status       | enum          | pending, ongoing, completed, cancelled |
-| assignees    | M2M → users   | staff assigned to this task            |
-| createdAt    | datetime      |                                        |
-| finishedAt   | datetime      | nullable                               |
+| assignees    | M2M → users   | via task_assignees join table          |
+| created_by   | FK → users    |                                        |
+| created_at   | datetime      |                                        |
+| finished_at  | datetime      | nullable                               |
 
 ---
 
 ### bills
 
-| Field          | Type                     | Notes                                        |
-| -------------- | ------------------------ | -------------------------------------------- |
-| id             | PK                       |                                              |
-| name           | string                   |                                              |
-| amount         | decimal                  |                                              |
-| taskID         | FK → tasks               | bills attach to tasks, not projects directly |
-| submittedBy    | FK → users               | staff who submitted                          |
-| status         | enum                     | pending, approved, rejected, cancelled       |
-| approvedBy     | FK → users               | nullable, supervisor who approved/rejected   |
-| transactionIDs | M2M → walletTransactions | supports partial payments                    |
-| description    | string                   | nullable                                     |
-| createdAt      | datetime                 |                                              |
-| resolvedAt     | datetime                 | nullable                                     |
+| Field       | Type       | Notes                                                                    |
+| ----------- | ---------- | ------------------------------------------------------------------------ |
+| id          | UUID PK    |                                                                          |
+| bill_name   | string     |                                                                          |
+| amount      | decimal    |                                                                          |
+| task_id     | FK → tasks | bills attach to tasks, not projects directly                             |
+| submittedBy | FK → users | staff who submitted                                                      |
+| status      | enum       | pending, approved, rejected, cancelled                                   |
+| approved_by | FK → users | nullable, supervisor who approved/rejected                               |
+| description | string     | nullable                                                                 |
+| created_at  | datetime   |                                                                          |
+| resolved_at | datetime   | nullable                                                                 |
+
+> wallet_transactions link back to bills via `bill_id` FK on wallet_transactions (not a join table).
 
 ---
 
 ### changes (audit log)
 
-Tracks modifications on any record. Linked records store a list of change IDs.
+> **Not yet implemented.** Planned — tracks modifications on any record.
 
 | Field        | Type       | Notes                     |
 | ------------ | ---------- | ------------------------- |
@@ -200,8 +204,10 @@ Get this full flow working end to end before adding anything else:
 
 - [x] Auth (session-based, role-based) — 2026-05-20
 - [x] Create wallet (system or project type) — 2026-06-01
-- [ ] System wallet deposit
-- [ ] Create project + allocate budget from wallet
+- [x] Create project (linked to a wallet) — 2026-06-14
+- [ ] System wallet deposit (walletTransaction type=deposit)
+- [ ] Budget allocation from system wallet to project wallet (walletTransaction type=allocation)
+- [ ] Wallet info page with ledger and calculated funds — in progress
 - [ ] Create tasks + subtasks
 - [ ] Submit bill
 - [ ] Approve/reject bill → wallet deduction

@@ -1,7 +1,7 @@
 {% extends "base.html" %} 
 {% block title %} {{ wallet.wallet_name }} info {% endblock %} 
 {% block content %}
-<div class="flex">
+<div class="flex items-center">
     <table id="general info"class="border-black border-2 mx-6">
         <caption>Basic Info</caption>
         <tr class="border border-black">
@@ -45,9 +45,13 @@
     </table>
     <div class="border-black border-2 p-4">
         <h2>Current Available Funds</h2>
-        {% for income in incomes %}
-            {{ income.amount }}
-        {% endfor %}
+        {{ total_income - total_expense }}
     </div>
+</div>
+<div id="ledger" class="border-2 border-black my-4 mx-6 flex">
+    <table class="mx-2 border-separate border-spacing-x-20 items-center">
+        <th>id</th><th>tx name</th><th>description</th><th>amount</th><th>tx type</th><th>time</th>
+        {% for %}
+    </table>
 </div>
 {% endblock %}

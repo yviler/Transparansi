@@ -33,9 +33,11 @@ accountable.
 ## Tech Stack
 
 - **FastAPI** — Web framework
-- **SQLAlchemy** — ORM
+- **SQLAlchemy** — ORM (async)
 - **Alembic** — Database migrations
 - **PostgreSQL** — Database
+- **Jinja2** — Server-side templating
+- **Tailwind CSS** — Styling
 - **Pydantic** — Data validation
 - **Session tokens** — Authentication (cookie-based, stored in DB)
 
